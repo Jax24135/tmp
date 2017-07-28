@@ -4,12 +4,12 @@ echo "# tmp" >> README.md
 git init
 git add README.md
 git commit -m "first commit"
-git remote add origin https://github.com/Jax24135/tmp.git
+git remote add origin https://github.com/Jax24135/*.git
 git push -u origin master
 
 …or push an existing repository from the command line
 
-git remote add origin https://github.com/Jax24135/tmp.git
+git remote add origin https://github.com/Jax24135/*.git
 git push -u origin master
 
 =====
@@ -25,3 +25,9 @@ Password for 'https://USERNAME@github.com': <PASSWORD>
 Use should also specify caching expire,
 $ git config --global credential.helper 'cache --timeout 7200'
 After enabling credential caching, it will be cached for 7200 seconds (2 hour).
+===
+Fetch git folder from current REPO
+git init
+git remote add [REMOTE_NAME] [GIT_URL]
+git fetch REMOTE_NAME
+git checkout REMOTE_NAME/BRANCH -- path/to/directory
