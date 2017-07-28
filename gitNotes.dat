@@ -31,3 +31,12 @@ git init
 git remote add [REMOTE_NAME] [GIT_URL]
 git fetch REMOTE_NAME
 git checkout REMOTE_NAME/BRANCH -- path/to/directory
+
+
+===
+Change Git Local/GitHub name/location
+$ git remote -v
+shows pull/fetch location
+$ git remote set-url origin https://github.com/<User>/*.git
+# confirm redirect
+$ git remote -v
