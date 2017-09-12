@@ -18,7 +18,7 @@ int main()
      * 
      * Keep a running total counter either way to show total flips in output.
      */ 
-    while (heads != 3) {
+    while (heads < 3) {
             randomNum = rand();
             
             // if 'heads' is flipped - add 1 to 'heads' counter (until it reaches 3)
