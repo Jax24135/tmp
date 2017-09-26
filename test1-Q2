@@ -1,0 +1,23 @@
+#include <iostream>
+#include <cstring>
+using namespace std;
+
+int main()
+{
+    string line = "to be or not to be, that is going to be the hard question.";
+    int counter = 0;
+    int loc = 0;
+    
+    loc = line.find("to");
+    counter++;
+    while (loc != string::npos) {
+        loc = line.find("to",loc+1);
+        counter++;
+        //loc = line.find("to",loc+1);
+    }
+    
+    cout << "The word 'to' occurs " << counter << " times.\n";
+    
+ return 0;   
+}
+    
