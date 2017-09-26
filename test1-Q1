@@ -1,0 +1,50 @@
+#include <iostream>
+#include <cmath>
+
+using namespace std;
+
+
+const float PI = 3.14;
+
+// Declare User-functions
+
+float GetRadius();
+void ComputeStatistics(float &surfaceArea, float &volume, float radius, float PI);
+void DisplayResults(float surfaceArea,float volume,float radius);
+
+int main()
+{
+    float radius;
+    float surfaceArea;
+    float volume;
+        
+    radius = GetRadius();
+    ComputeStatistics(surfaceArea, volume, radius, PI);
+    DisplayResults(surfaceArea, volume, radius);
+    
+    
+    return 0;
+}
+
+//
+float GetRadius() {
+    int radius = -1;
+    
+    while (radius < 1) {
+        cout << "Enter the radius value: ";
+        cin >> radius;
+    }
+    
+    return radius;
+}
+
+void ComputeStatistics(float &surfaceArea, float &volume, float radius, float PI) {
+    surfaceArea = 4*PI*(pow(radius,2));
+    volume = (4/3)*PI*(pow(radius,3));
+}
+
+void DisplayResults(float surfaceArea,float volume,float radius) {
+    cout << "The radius is " << radius << endl
+         << "The surface area is " << surfaceArea << endl
+         << "The volume of the sphere is " << volume << endl;
+}
