@@ -18,6 +18,7 @@ int main() {
     
     ReadData(myIn,classNames,boxes, noi);
     
+    // print out ARRAY values
     for(int j=0 ; j<noi;j++) {
         cout << "class is " << classNames[j] << " sales is " << boxes[j] << endl;
     }
@@ -36,14 +37,13 @@ void ReadData(ifstream &myIn,string classNames[], int boxes[],int &noi){
         
     myIn.open("boxes.dat"); // open specified file location
     assert(myIn);           // confirm file open OK
-    
-    
+
+
     // set first className + Box sales to '0' in both ARRAYs
     // add 1 to number of exisiting items in each array (noi)
     myIn >> classNames[noi] >> boxes[noi];
         
-    
-    
+
     // read in each line from file(name+' '+sales) and read into placeholders
     // pass on to LinearSearch() to see if className already exists (>=0)
     
@@ -51,7 +51,6 @@ void ReadData(ifstream &myIn,string classNames[], int boxes[],int &noi){
     // and add 1 to number of existing items (noi)
     
     while(myIn >> tmpClass >> tmpBoxes) {
-        
         
         // LinearSearch() returns either an -1 or greater value
         result = LinearSearch(classNames, tmpClass, noi);
@@ -66,13 +65,13 @@ void ReadData(ifstream &myIn,string classNames[], int boxes[],int &noi){
             boxes[noi+1] = tmpBoxes;
             noi++;
         }
+       
         /*
-        
-         * 
-         * if (classNames[result] == "Husky") {
+        if (classNames[result] == "Husky") {
             cout << "className is " << tmpClass << ", sales is " << tmpBoxes
                  << ", and total sales is " << boxes[result] << endl;
         }*/
+
     }
     
     myIn.close();   // close file stream
@@ -87,6 +86,6 @@ int LinearSearch(string classNames[],string tmpClass,int noi) {
         }
     }
     
-    // gone through whole array
+    // gone through whole array... time to add a new cell
     return -1;
 }
