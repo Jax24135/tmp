@@ -1,6 +1,6 @@
-// asgn BY Jonathan Jackson,  CSCI ####-sec, Due: mm/dd/yyyy
+// asgn BY student name,  CSCI ####-sec, Due: mm/dd/yyyy
 // PROGRAM ID:  file-name.cpp / one-line description
-// AUTHOR:  Jonathan Jackson
+// AUTHOR:  student name
 // INSTALLATION:  MTSU
 // REMARKS:  short description
 
@@ -23,6 +23,8 @@ void ReadData(ifstream &myIn, Hits arr[], int &noi);
 void DisplayMenu(int &choice);
 void PrintByArtist(Hits arr[],int noi,string targetName);
 void PrintByYear(Hits arr[],int noi,int targetYear);
+void AddSong(Hits arr[],int &noi);
+
 void DisplayArray(Hits arr[],int noi);
 
 const int SIZE = 500;
@@ -54,12 +56,12 @@ int main()
             cin.ignore(100,'\n');
             cout << endl;
             PrintByYear(arr,noi,targetYear);
+        } else if (choice == 3) {
+            AddSong(arr,noi);
         }
-            
-        /*else if (choice == 3)
-            AddSong();
-        else if (choice == 4)
-            DeleteSong();*/
+
+        //else if (choice == 4)
+        //    DeleteSong();*/
     }
     
     return 0;
@@ -85,18 +87,18 @@ void ReadData(ifstream &myIn, Hits arr[], int &noi) {
 }
 
 void DisplayMenu(int &choice) {
-    cout << setw(10) << ' ' << setw(0) << "Billboard Top Song (2012-2015) Management"
+    cout << right << setw(52) << "Billboard Top Song (2012-2015) Management"
          << endl << endl
-         << setw(2) << ' ' << "Please select from the following menu choices:"
+         << setw(49) << "Please select from the following menu choices:"
          << endl << endl
-         << setw(10) << ' ' << "1.  Look up top hits by artist\n"
-         << setw(10) << ' ' << "2.  Look up top hits by year\n"
-         << setw(10) << ' ' << "3.  Add a new song\n"
-         << setw(10) << ' ' << "4.  Delete an existing song\n"
-         << setw(10) << ' ' << "5.  Exit"
+         << left << setw(11) << ' ' << "1.  Look up top hits by artist\n"
+         << setw(11) << ' ' << "2.  Look up top hits by year\n"
+         << setw(11) << ' ' << "3.  Add a new song\n"
+         << setw(11) << ' ' << "4.  Delete an existing song\n"
+         << setw(11) << ' ' << "5.  Exit"
          << endl << endl;
     
-    cout << setw(10) << ' ' << "Enter your choice: ";
+    cout << setw(11) << ' ' << "Enter your choice: ";
     cin >> choice; // get Ue
     cin.ignore(100,'\n');
 }
@@ -115,12 +117,12 @@ void PrintByArtist(Hits arr[],int noi,string targetName) {
         }
     }
     
-    // if
-    
+    // if no hits were found by this artist, print ERROR message
     if (counter == 0) {
         cout << "ERROR: " << targetName << " hasn't had any hits in the past 4 years.\n";
-    } else {
-        
+    
+    // otherwise, print title, rank & year in table format
+    } else {    
         //Display ARTIST HEADER
         cout << "Here are the songs by " << targetName << endl << endl;
         //Display COLUMN HEADERS
@@ -138,12 +140,29 @@ void PrintByArtist(Hits arr[],int noi,string targetName) {
 void PrintByYear(Hits arr[],int noi, int targetYear) {
     
     for (int i=0; i<noi ; i++) {
-        if (targetYear == arr[i].year) {
+        if (targetYear == arr[i].year){
             cout << arr[i].songTitle << endl;
         }
     }
-    
     cout << endl << endl;
+}
+
+void AddSong(Hits arr[],int &noi) {
+    Hits newHit;
+    
+    cout << "Enter the new Song Title: ";
+    getline(cin,newHit.songTitle);
+    cout << "Enter the Artist Name: ";
+    getline(cin,newHit.artistName);
+    cout << "Enter the Song Rank: ";
+    cin >> newHit.rank;
+    cin.ignore(100,'\n');
+    cout << "Enter the Release Year: ";
+    cin >> newHit.year;
+    cin.ignore(100,'\n');
+    
+    arr[noi] = newHit;
+    noi++;
 }
 
 //DEBUGGING FUNCTION
