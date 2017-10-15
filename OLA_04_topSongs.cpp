@@ -12,57 +12,68 @@
 
 using namespace std;
 
+// Custom DataType
 struct SongsType {
-	int rank;
+	int billboardRank;
 	string artistName;
 	string songTitle;
-	int year;
+	int releaseYear;
 };
 
-void ReadData(ifstream &myIn, SongsType arr[], int &noi);
+// Delare User-Functions
+void ReadData(ifstream &myIn, SongsType arr[], int &numOfItems);
 void DisplayMenu(int &choice);
-void PrintByArtist(SongsType arr[],int noi,string targetName);
-void PrintByYear(SongsType arr[],int noi,int targetYear);
-void AddSong(SongsType arr[],int &noi);
-void DeleteSong(SongsType arr[],int &noi);
-int LinearSearch(SongsType arr[],int noi,string targetSong);
-void DisplayArray(SongsType arr[],int noi);
+void PrintByArtist(SongsType arr[],int numOfItems,string artistName);
+void PrintByYear(SongsType arr[],int numOfItems,int targetYear);
+void AddSong(SongsType arr[],int &numOfItems);
+void DeleteSong(SongsType arr[],int &numOfItems);
+int LinearSearch(SongsType arr[],int numOfItems,string targetSong);
+void DisplayArray(SongsType arr[],int numOfItems);
 
-const int SIZE = 500;
+
+const int MAX_ARRAY_SIZE = 500;
 
 int main()
 {
-    SongsType arr[SIZE]; // ARRAY
-    ifstream myIn; // input file stream
-    int noi=0; // number of items in ARRAY
-    int choice = -1;
-    string targetName;
-    int targetYear;
-	
-    ReadData(myIn,arr,noi);
+    SongsType arr[MAX_ARRAY_SIZE];  // ARRAY
+    ifstream myIn;                  // input file stream
+    int numOfItems=0;               // number of items in ARRAY
+    int choice = -1;                // default choice
+    string targetName;              // used to search/display an artistName in ARRAY
+    int targetYear;                 // used to search/display songs in a chosen year
+
+    // Read in DATA file into ARRAY
+    ReadData(myIn,arr,numOfItems);
         
     while(choice != 5) {
         //always show MENU on iterations
         DisplayMenu(choice);
         
-        if (choice == 1) {
+        // Validate input is a valid number
+        if (choice<1 || choice>5) {
+            cout << "Please choose a number between 1 and 5.\n\n";
+            continue;
+        
+        // if User enter 1, prompt for artistName
+        // Search for all listings associated with artistName
+        } else if (choice == 1) {
             cout << "\nEnter the name of the Artist: ";
             getline(cin,targetName);
             cout << endl;
-            PrintByArtist(arr,noi,targetName);
+            PrintByArtist(arr,numOfItems,targetName);
         
         } else if (choice == 2) {
             cout << "\nEnter the Year to list hit songs: ";
             cin >> targetYear;
             cin.ignore(100,'\n');
             cout << endl;
-            PrintByYear(arr,noi,targetYear);
+            PrintByYear(arr,numOfItems,targetYear);
         
         } else if (choice == 3) {
-            AddSong(arr,noi);
+            AddSong(arr,numOfItems);
         
         } else if (choice == 4) {
-            DeleteSong(arr,noi);
+            DeleteSong(arr,numOfItems);
         }
         
     }
@@ -72,23 +83,24 @@ int main()
 
 
 // Open DATA file, read DATA in to ARRAY objects, close file
-void ReadData(ifstream &myIn, SongsType arr[], int &noi) {
+void ReadData(ifstream &myIn, SongsType arr[], int &numOfItems) {
 
     myIn.open("topsongs.dat"); //open DATA file
     assert(myIn);  //confirm file opens
 	
-    // read the entire file for the order or $rank, $artistName, $songTitle, $year
-    while(myIn >> arr[noi].rank) {
+    // read the entire file for the order or $billboardRank, $artistName, $songTitle, $releaseYear
+    while(myIn >> arr[numOfItems].billboardRank) {
         myIn.ignore(100,'\n'); // skip over newLineCHAR at end of cin before next read
-        getline(myIn,arr[noi].artistName);
-        getline(myIn,arr[noi].songTitle);
-        myIn >> arr[noi].year;
+        getline(myIn,arr[numOfItems].artistName);
+        getline(myIn,arr[numOfItems].songTitle);
+        myIn >> arr[numOfItems].releaseYear;
         myIn.ignore(100,'\n'); // skip over newLineCHAR at end of cin before next read
-        noi++;
+        numOfItems++;
     }
     myIn.close(); // close DATA file
 }
-
+// This function displays a menu of choices for User Input
+// User chooses between 1-5 (validated in MAIN) 
 void DisplayMenu(int &choice) {
     cout << right << setw(52) << "Billboard Top Song (2012-2015) Management"
          << endl << endl
@@ -101,56 +113,66 @@ void DisplayMenu(int &choice) {
          << setw(11) << ' ' << "5.  Exit"
          << endl << endl;
     
+    // Prompt/Get User $choice
     cout << setw(11) << ' ' << "Enter your choice: ";
-    cin >> choice; // get Ue
+    cin >> choice;
     cin.ignore(100,'\n');
+    cout << setw(0); // restore "0" offset
 }
 
-void PrintByArtist(SongsType arr[],int noi,string targetName) {
+
+// This function searches arr[] (FULL_ARRAY) for a $targetName
+// if found, add to a temp ARRAY and display temp ARRAY results in table form
+// if not found, print ERROR message
+void PrintByArtist(SongsType arr[],int numOfItems,string targetName) {
     
-    SongsType ArtistSongsType[SIZE]; // new temporary ARRAY for found hits
-    int counter = 0;  // numOfItems for temp ARRAY
+    SongsType Matches[MAX_ARRAY_SIZE]; // new temporary ARRAY for MatchingInfo
+    int counter = 0;  // numOfItems in temp ARRAY
     
-    // go through FULL_ARRAY, if artistName matches,
-    // add to the new/2ndary ARRAY and +1 to the 2nd ARRAY counter
-    for (int i=0; i<noi ; i++) {
+    // go through FULL_ARRAY, if $artistName matches,
+    // add to the MatchesARRAY, and add 1 to the 2nd ARRAY $counter
+    for (int i=0; i<numOfItems ; i++) {
         if (targetName == arr[i].artistName) {
-            ArtistSongsType[counter] = arr[i];
+            Matches[counter] = arr[i];
             counter++;
         }
     }
     
-    // if no hits were found by this artist, print ERROR message
+    // if no hits were found by this $artistName, print ERROR message
     if (counter == 0) {
-        cout << "ERROR: " << targetName << " hasn't had any hits in the past 4 years.\n";
+        cout << "ERROR: " << targetName << " had no hits songs in the past 4 years.\n";
     
-    // otherwise, print title, rank & year in table format
+    // otherwise, print title, billboardRank & releaseYear in table format
     } else {    
+        
         //Display ARTIST HEADER
         cout << "Here are the songs by " << targetName << endl << endl;
+        
         //Display COLUMN HEADERS
         cout << left << setw(30) << "Title" << setw(6) << "Rank" << setw(4) << "Year\n";
     
+        // Print real info from Matches[]
         for (int i=0; i<counter; i++) {
-            cout << setw(30) << ArtistSongsType[i].songTitle << setw(6) << ArtistSongsType[i].rank << setw(4) << ArtistSongsType[i].year << endl;
+            cout << setw(30) << Matches[i].songTitle
+                 << setw(6)  << Matches[i].billboardRank
+                 << setw(4)  << Matches[i].releaseYear << endl;
         }
     }
-    
-    cout << endl << endl;
-    setw(0);
+    cout << endl << endl; // blank line for readability
+    setw(0); // set setw back to '0'
 }
 
-void PrintByYear(SongsType arr[],int noi, int targetYear) {
+void PrintByYear(SongsType arr[],int numOfItems, int targetYear) {
     
-    for (int i=0; i<noi ; i++) {
-        if (targetYear == arr[i].year){
+    for (int i=0; i<numOfItems ; i++) {
+        if (targetYear == arr[i].releaseYear){
             cout << arr[i].songTitle << endl;
         }
     }
     cout << endl << endl;
 }
 
-void AddSong(SongsType arr[],int &noi) {
+void AddSong(SongsType arr[],int &numOfItems) {
     SongsType newHit;
     
     cout << "Enter the new Song Title: ";
@@ -158,40 +180,40 @@ void AddSong(SongsType arr[],int &noi) {
     cout << "Enter the Artist Name: ";
     getline(cin,newHit.artistName);
     cout << "Enter the Song Rank: ";
-    cin >> newHit.rank;
+    cin >> newHit.billboardRank;
     cin.ignore(100,'\n');
     cout << "Enter the Release Year: ";
-    cin >> newHit.year;
+    cin >> newHit.releaseYear;
     cin.ignore(100,'\n');
     
-    arr[noi] = newHit;
-    noi++;
+    arr[numOfItems] = newHit;
+    numOfItems++;
 }
 
-void DeleteSong(SongsType arr[],int &noi) {
+void DeleteSong(SongsType arr[],int &numOfItems) {
     string targetSong;
     int loc;
     
     cout << "Enter the Song Title to be deleted: ";
     getline(cin,targetSong);
     
-    loc = LinearSearch(arr,noi,targetSong);
-    cout << "noi is " << noi << endl;
+    loc = LinearSearch(arr,numOfItems,targetSong);
+    cout << "numOfItems is " << numOfItems << endl;
     
     if (loc == -1) {
         cout << "ERROR: No matching Song Title was found.";
     } else {
-        for (int i=loc; i<noi; i++) {
+        for (int i=loc; i<numOfItems; i++) {
             arr[i] = arr[i+1];
         }
         
     }
-    noi--;
-    cout << "NEW noi is " << noi << endl;
+    numOfItems--;
+    cout << "NEW numOfItems is " << numOfItems << endl;
 }
 
-int LinearSearch(SongsType arr[],int noi,string targetSong) {
-    for (int i = 0; i < noi; i++) {
+int LinearSearch(SongsType arr[],int numOfItems,string targetSong) {
+    for (int i = 0; i < numOfItems; i++) {
         if (arr[i].songTitle == targetSong)
             return i;
     }
@@ -199,14 +221,14 @@ int LinearSearch(SongsType arr[],int noi,string targetSong) {
 }
 
 //DEBUGGING FUNCTION
-void DisplayArray(SongsType arr[],int noi) {
+void DisplayArray(SongsType arr[],int numOfItems) {
     
     // display column HEADERS
     cout << left << setw(30) << "Title" << setw(6) << "Rank" << setw(4) << "Year\n";
     
-    //cout << arr[noi].rank << ' ' << arr[noi].artist << ' ' << arr[0].song << ' ' << arr[noi].year << endl;
+    //cout << arr[numOfItems].billboardRank << ' ' << arr[numOfItems].artist << ' ' << arr[0].song << ' ' << arr[numOfItems].releaseYear << endl;
     
     for (int i=0; i<12; i++) {
-        cout << setw(30) << arr[i].songTitle << setw(6) << arr[i].rank << setw(4) << arr[i].year << endl;
+        cout << setw(30) << arr[i].songTitle << setw(6) << arr[i].billboardRank << setw(4) << arr[i].releaseYear << endl;
     }
 }
