@@ -1,6 +1,6 @@
-// asgn BY student name,  CSCI ####-sec, Due: mm/dd/yyyy
+// asgn BY Jonathan Jackson,  CSCI ####-sec, Due: mm/dd/yyyy
 // PROGRAM ID:  file-name.cpp / one-line description
-// AUTHOR:  student name
+// AUTHOR:  Jonathan Jackson
 // INSTALLATION:  MTSU
 // REMARKS:  short description
 
@@ -21,6 +21,8 @@ struct Hits {
 
 void ReadData(ifstream &myIn, Hits arr[], int &noi);
 void DisplayMenu(int &choice);
+void PrintByArtist(Hits arr[],int noi,string targetName);
+void PrintByYear(Hits arr[],int noi,int targetYear);
 void DisplayArray(Hits arr[],int noi);
 
 const int SIZE = 500;
@@ -31,19 +33,33 @@ int main()
     ifstream myIn; // input file stream
     int noi=0; // number of items in ARRAY
     int choice = -1;
+    string targetName;
+    int targetYear;
 	
     ReadData(myIn,arr,noi);
         
     while(choice != 5) {
+        //always show MENU on iterations
         DisplayMenu(choice);
-        if (choice == 1)
-            cout << '1'; // FindArtistHits();
-        else if (choice == 2)
-            cout << '2';  // FindYearHits();
-        else if (choice == 3)
-            cout << '3';  // AddNewSong();
+        
+        if (choice == 1) {
+            cout << "\nEnter the name of the Artist: ";
+            getline(cin,targetName);
+            cout << endl;
+            PrintByArtist(arr,noi,targetName);
+        
+        } else if (choice == 2) {
+            cout << "\nEnter the Year to list hit songs: ";
+            cin >> targetYear;
+            cin.ignore(100,'\n');
+            cout << endl;
+            PrintByYear(arr,noi,targetYear);
+        }
+            
+        /*else if (choice == 3)
+            AddSong();
         else if (choice == 4)
-            cout << '4';  //  DeleteExistingSong();
+            DeleteSong();*/
     }
     
     return 0;
@@ -85,14 +101,53 @@ void DisplayMenu(int &choice) {
     cin.ignore(100,'\n');
 }
 
+void PrintByArtist(Hits arr[],int noi,string targetName) {
+    
+    Hits ArtistHits[SIZE]; // new temporary ARRAY for found hits
+    int counter = 0;  // numOfItems for temp ARRAY
+    
+    // go through FULL_ARRAY, if artistName matches,
+    // add to the new/2ndary ARRAY and +1 to the 2nd ARRAY counter
+    for (int i=0; i<noi ; i++) {
+        if (targetName == arr[i].artistName) {
+            ArtistHits[counter] = arr[i];
+            counter++;
+        }
+    }
+    
+    // if
+    
+    if (counter == 0) {
+        cout << "ERROR: " << targetName << " hasn't had any hits in the past 4 years.\n";
+    } else {
+        
+        //Display ARTIST HEADER
+        cout << "Here are the songs by " << targetName << endl << endl;
+        //Display COLUMN HEADERS
+        cout << left << setw(30) << "Title" << setw(6) << "Rank" << setw(4) << "Year\n";
+    
+        for (int i=0; i<counter; i++) {
+            cout << setw(30) << ArtistHits[i].songTitle << setw(6) << ArtistHits[i].rank << setw(4) << ArtistHits[i].year << endl;
+        }
+    }
+    
+    cout << endl << endl;
+    setw(0);
+}
 
-// DEBUGGING FUNCTION
+void PrintByYear(Hits arr[],int noi, int targetYear) {
+    
+    for (int i=0; i<noi ; i++) {
+        if (targetYear == arr[i].year) {
+            cout << arr[i].songTitle << endl;
+        }
+    }
+    
+    cout << endl << endl;
+}
+
+//DEBUGGING FUNCTION
 void DisplayArray(Hits arr[],int noi) {
-    
-    //int searchedLocation = 0;
-    
-//add $this     // display searched-for artist + data
-    //cout << "Here are the songs by " << arr[searchedLocation].artistName << endl;
     
     // display column HEADERS
     cout << left << setw(30) << "Title" << setw(6) << "Rank" << setw(4) << "Year\n";
