@@ -1,6 +1,6 @@
-// asgn BY student name,  CSCI ####-sec, Due: mm/dd/yyyy
-// PROGRAM ID:  file-name.cpp / one-line description
-// AUTHOR:  student name
+// asgn BY Jonathan Jackson,  CSCI 2170-001, Due: Midnight, Thursday, 10/19/2017
+// PROGRAM ID:  topsongs.cpp / Top Billboard SongsType Program
+// AUTHOR:  Jonathan Jackson
 // INSTALLATION:  MTSU
 // REMARKS:  short description
 
@@ -12,26 +12,27 @@
 
 using namespace std;
 
-struct Hits {
+struct SongsType {
 	int rank;
 	string artistName;
 	string songTitle;
 	int year;
 };
 
-void ReadData(ifstream &myIn, Hits arr[], int &noi);
+void ReadData(ifstream &myIn, SongsType arr[], int &noi);
 void DisplayMenu(int &choice);
-void PrintByArtist(Hits arr[],int noi,string targetName);
-void PrintByYear(Hits arr[],int noi,int targetYear);
-void AddSong(Hits arr[],int &noi);
-
-void DisplayArray(Hits arr[],int noi);
+void PrintByArtist(SongsType arr[],int noi,string targetName);
+void PrintByYear(SongsType arr[],int noi,int targetYear);
+void AddSong(SongsType arr[],int &noi);
+void DeleteSong(SongsType arr[],int &noi);
+int LinearSearch(SongsType arr[],int noi,string targetSong);
+void DisplayArray(SongsType arr[],int noi);
 
 const int SIZE = 500;
 
 int main()
 {
-    Hits arr[SIZE]; // ARRAY
+    SongsType arr[SIZE]; // ARRAY
     ifstream myIn; // input file stream
     int noi=0; // number of items in ARRAY
     int choice = -1;
@@ -56,12 +57,14 @@ int main()
             cin.ignore(100,'\n');
             cout << endl;
             PrintByYear(arr,noi,targetYear);
+        
         } else if (choice == 3) {
             AddSong(arr,noi);
+        
+        } else if (choice == 4) {
+            DeleteSong(arr,noi);
         }
-
-        //else if (choice == 4)
-        //    DeleteSong();*/
+        
     }
     
     return 0;
@@ -69,7 +72,7 @@ int main()
 
 
 // Open DATA file, read DATA in to ARRAY objects, close file
-void ReadData(ifstream &myIn, Hits arr[], int &noi) {
+void ReadData(ifstream &myIn, SongsType arr[], int &noi) {
 
     myIn.open("topsongs.dat"); //open DATA file
     assert(myIn);  //confirm file opens
@@ -103,16 +106,16 @@ void DisplayMenu(int &choice) {
     cin.ignore(100,'\n');
 }
 
-void PrintByArtist(Hits arr[],int noi,string targetName) {
+void PrintByArtist(SongsType arr[],int noi,string targetName) {
     
-    Hits ArtistHits[SIZE]; // new temporary ARRAY for found hits
+    SongsType ArtistSongsType[SIZE]; // new temporary ARRAY for found hits
     int counter = 0;  // numOfItems for temp ARRAY
     
     // go through FULL_ARRAY, if artistName matches,
     // add to the new/2ndary ARRAY and +1 to the 2nd ARRAY counter
     for (int i=0; i<noi ; i++) {
         if (targetName == arr[i].artistName) {
-            ArtistHits[counter] = arr[i];
+            ArtistSongsType[counter] = arr[i];
             counter++;
         }
     }
@@ -129,7 +132,7 @@ void PrintByArtist(Hits arr[],int noi,string targetName) {
         cout << left << setw(30) << "Title" << setw(6) << "Rank" << setw(4) << "Year\n";
     
         for (int i=0; i<counter; i++) {
-            cout << setw(30) << ArtistHits[i].songTitle << setw(6) << ArtistHits[i].rank << setw(4) << ArtistHits[i].year << endl;
+            cout << setw(30) << ArtistSongsType[i].songTitle << setw(6) << ArtistSongsType[i].rank << setw(4) << ArtistSongsType[i].year << endl;
         }
     }
     
@@ -137,7 +140,7 @@ void PrintByArtist(Hits arr[],int noi,string targetName) {
     setw(0);
 }
 
-void PrintByYear(Hits arr[],int noi, int targetYear) {
+void PrintByYear(SongsType arr[],int noi, int targetYear) {
     
     for (int i=0; i<noi ; i++) {
         if (targetYear == arr[i].year){
@@ -147,8 +150,8 @@ void PrintByYear(Hits arr[],int noi, int targetYear) {
     cout << endl << endl;
 }
 
-void AddSong(Hits arr[],int &noi) {
-    Hits newHit;
+void AddSong(SongsType arr[],int &noi) {
+    SongsType newHit;
     
     cout << "Enter the new Song Title: ";
     getline(cin,newHit.songTitle);
@@ -165,8 +168,38 @@ void AddSong(Hits arr[],int &noi) {
     noi++;
 }
 
+void DeleteSong(SongsType arr[],int &noi) {
+    string targetSong;
+    int loc;
+    
+    cout << "Enter the Song Title to be deleted: ";
+    getline(cin,targetSong);
+    
+    loc = LinearSearch(arr,noi,targetSong);
+    cout << "noi is " << noi << endl;
+    
+    if (loc == -1) {
+        cout << "ERROR: No matching Song Title was found.";
+    } else {
+        for (int i=loc; i<noi; i++) {
+            arr[i] = arr[i+1];
+        }
+        
+    }
+    noi--;
+    cout << "NEW noi is " << noi << endl;
+}
+
+int LinearSearch(SongsType arr[],int noi,string targetSong) {
+    for (int i = 0; i < noi; i++) {
+        if (arr[i].songTitle == targetSong)
+            return i;
+    }
+    return -1;
+}
+
 //DEBUGGING FUNCTION
-void DisplayArray(Hits arr[],int noi) {
+void DisplayArray(SongsType arr[],int noi) {
     
     // display column HEADERS
     cout << left << setw(30) << "Title" << setw(6) << "Rank" << setw(4) << "Year\n";
