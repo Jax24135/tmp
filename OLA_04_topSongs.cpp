@@ -2,7 +2,10 @@
 // PROGRAM ID:  topsongs.cpp / Top Billboard SongsType Program
 // AUTHOR:  Jonathan Jackson
 // INSTALLATION:  MTSU
-// REMARKS:  short description
+// REMARKS:  This program prompts a User via Menu options for searching through
+// past hit artists & songs, adding new artist/songs, or deleting songs
+// until User chooses to exit the program.
+// Base DATA is brought in from existing data file.
 
 #include <iostream>
 #include <fstream>
@@ -14,10 +17,10 @@ using namespace std;
 
 // Custom DataType
 struct SongsType {
-	int billboardRank;
-	string artistName;
-	string songTitle;
-	int releaseYear;
+	int billboardRank; // contains the rank of each song in the year
+	string artistName; // contains the artist name
+	string songTitle;  // contains the Song title
+	int releaseYear;   // contains the year the song was released
 };
 
 // Delare User-Functions
@@ -161,6 +164,8 @@ void PrintByArtist(SongsType arr[],int numOfItems,string targetName) {
     cout << endl << endl; // blank line for readability
     setw(0); // set setw back to '0'
 }
+
+
 
 void PrintByYear(SongsType arr[],int numOfItems, int targetYear) {
     
